@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useTransition, useEffect } from 'react';
@@ -11,20 +12,26 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Label } from './ui/label';
 
 interface AdminControlsProps {
-  wallets: WalletData[]; // To select a miner address
+  wallets: WalletData[];
+  networkId: string; // New prop
 }
 
-export function AdminControls({ wallets }: AdminControlsProps) {
+export function AdminControls({ wallets, networkId }: AdminControlsProps) {
   const [selectedMinerAddress, setSelectedMinerAddress] = useState<string>('');
   const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
 
   useEffect(() => {
-    // Pre-select the first wallet as miner if available
-    if (wallets.length > 0 && !selectedMinerAddress) {
-      setSelectedMinerAddress(wallets[0].publicKey);
+    if (wallets.length > 0) {
+      // If current selected miner is not in new list, or no miner selected, pick first from new list
+      if (!selectedMinerAddress || !wallets.find(w => w.publicKey === selectedMinerAddress)) {
+        setSelectedMinerAddress(wallets[0].publicKey);
+      }
+    } else {
+      setSelectedMinerAddress(''); // No wallets, clear selection
     }
   }, [wallets, selectedMinerAddress]);
+
 
   const handleMineBlock = () => {
     if (!selectedMinerAddress) {
@@ -34,7 +41,8 @@ export function AdminControls({ wallets }: AdminControlsProps) {
     startTransition(async () => {
       const formData = new FormData();
       formData.append('minerAddress', selectedMinerAddress);
-      const result = await mineBlockAction(formData);
+      // Pass networkId to the action
+      const result = await mineBlockAction(networkId, formData);
       if (result.success) {
         toast({ title: 'Mining Successful', description: result.message });
       } else {
@@ -50,7 +58,7 @@ export function AdminControls({ wallets }: AdminControlsProps) {
           <Pickaxe className="mr-2 h-5 w-5 text-destructive" />
           Admin Controls
         </CardTitle>
-        <CardDescription>Manually trigger blockchain operations.</CardDescription>
+        <CardDescription>Manually trigger blockchain operations on network: <span className="font-semibold capitalize">{networkId}</span>.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div>
@@ -67,7 +75,7 @@ export function AdminControls({ wallets }: AdminControlsProps) {
               ))}
             </SelectContent>
           </Select>
-          {wallets.length === 0 && <p className="text-xs text-muted-foreground mt-1">No wallets available to act as miner.</p>}
+          {wallets.length === 0 && <p className="text-xs text-muted-foreground mt-1">No wallets available on this network to act as miner.</p>}
         </div>
         <Button onClick={handleMineBlock} className="w-full" disabled={isPending || wallets.length === 0 || !selectedMinerAddress}>
           {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Pickaxe className="mr-2 h-4 w-4" />}

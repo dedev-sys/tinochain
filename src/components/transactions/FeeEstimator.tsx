@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useTransition } from 'react';
@@ -14,9 +15,10 @@ import type { TransactionData } from '@/lib/blockchain-service';
 interface FeeEstimatorProps {
   mempool: TransactionData[];
   onFeeEstimated: (fee: number) => void;
+  networkId: string; // New prop
 }
 
-export function FeeEstimator({ mempool, onFeeEstimated }: FeeEstimatorProps) {
+export function FeeEstimator({ mempool, onFeeEstimated, networkId }: FeeEstimatorProps) {
   const [transactionDetails, setTransactionDetails] = useState('');
   const [estimatedFee, setEstimatedFee] = useState<number | null>(null);
   const [reasoning, setReasoning] = useState<string | null>(null);
@@ -43,7 +45,8 @@ export function FeeEstimator({ mempool, onFeeEstimated }: FeeEstimatorProps) {
 
     startTransition(async () => {
       const mempoolSummary = getMempoolSummary();
-      const result = await estimateFeeAction(transactionDetails, mempoolSummary);
+      // Pass networkId to the action
+      const result = await estimateFeeAction(networkId, transactionDetails, mempoolSummary);
       if (result.success && result.suggestedFee !== undefined) {
         setEstimatedFee(result.suggestedFee);
         setReasoning(result.reasoning || 'No specific reasoning provided.');
@@ -63,7 +66,7 @@ export function FeeEstimator({ mempool, onFeeEstimated }: FeeEstimatorProps) {
           AI Fee Estimator
         </CardTitle>
         <CardDescription>
-          Describe your transaction to get an AI-suggested fee for faster processing.
+          Describe your transaction (for network: <span className="font-semibold capitalize">{networkId}</span>) to get an AI-suggested fee.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -90,7 +93,7 @@ export function FeeEstimator({ mempool, onFeeEstimated }: FeeEstimatorProps) {
         )}
       </CardContent>
       <CardFooter>
-         <p className="text-xs text-muted-foreground">Current Mempool: {getMempoolSummary()}</p>
+         <p className="text-xs text-muted-foreground">Current Mempool ({networkId}): {getMempoolSummary()}</p>
       </CardFooter>
     </Card>
   );

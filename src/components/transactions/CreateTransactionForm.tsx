@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useTransition, useEffect } from 'react';
@@ -14,14 +15,15 @@ import { FeeEstimator } from './FeeEstimator';
 
 interface CreateTransactionFormProps {
   wallets: WalletData[];
-  mempool: MempoolTransactionData[]; // For FeeEstimator
+  mempool: MempoolTransactionData[];
+  networkId: string; // New prop
 }
 
-export function CreateTransactionForm({ wallets, mempool }: CreateTransactionFormProps) {
+export function CreateTransactionForm({ wallets, mempool, networkId }: CreateTransactionFormProps) {
   const [fromAddress, setFromAddress] = useState<string>('');
   const [toAddress, setToAddress] = useState<string>('');
   const [amount, setAmount] = useState<string>('');
-  const [fee, setFee] = useState<string>('1'); // Default fee
+  const [fee, setFee] = useState<string>('1');
   const [signature, setSignature] = useState<string>('');
   const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
@@ -29,7 +31,16 @@ export function CreateTransactionForm({ wallets, mempool }: CreateTransactionFor
   useEffect(() => {
     if (wallets.length > 0 && !fromAddress) {
       setFromAddress(wallets[0].publicKey);
+    } else if (wallets.length === 0) {
+      setFromAddress(''); // Clear if no wallets, e.g. after network switch
     }
+    // Reset form fields if wallets list changes (e.g. network switch)
+    // but preserve fromAddress if it's still valid in the new list
+    if (wallets.length > 0 && fromAddress && !wallets.find(w => w.publicKey === fromAddress)) {
+      setFromAddress(wallets[0].publicKey);
+    }
+
+
   }, [wallets, fromAddress]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -44,17 +55,11 @@ export function CreateTransactionForm({ wallets, mempool }: CreateTransactionFor
     }
 
     startTransition(async () => {
-      const formData = new FormData();
-      formData.append('fromAddress', fromAddress);
-      formData.append('toAddress', toAddress);
-      formData.append('amount', amount);
-      formData.append('fee', fee);
-      formData.append('signature', signature);
-
-      const result = await submitTransactionAction(formData);
+      const formData = new FormData(event.currentTarget);
+      // networkId is passed as a separate argument to the action
+      const result = await submitTransactionAction(networkId, formData);
       if (result.success) {
         toast({ title: 'Transaction Submitted', description: result.message });
-        // Reset form
         setToAddress('');
         setAmount('');
         setSignature('');
@@ -77,13 +82,13 @@ export function CreateTransactionForm({ wallets, mempool }: CreateTransactionFor
             <Send className="mr-2 h-5 w-5 text-primary" />
             Create Transaction
           </CardTitle>
-          <CardDescription>Send uemfCoin to another address. Provide a manual signature.</CardDescription>
+          <CardDescription>Send uemfCoin to another address on network: <span className="font-semibold capitalize">{networkId}</span>. Provide a manual signature.</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <Label htmlFor="fromAddress">From Wallet (Your Public Key)</Label>
-              <Select value={fromAddress} onValueChange={setFromAddress} disabled={wallets.length === 0}>
+              <Select name="fromAddress" value={fromAddress} onValueChange={setFromAddress} disabled={wallets.length === 0}>
                 <SelectTrigger id="fromAddress">
                   <SelectValue placeholder="Select your wallet" />
                 </SelectTrigger>
@@ -95,25 +100,25 @@ export function CreateTransactionForm({ wallets, mempool }: CreateTransactionFor
                   ))}
                 </SelectContent>
               </Select>
-              {wallets.length === 0 && <p className="text-xs text-muted-foreground mt-1">No wallets available. Create one first.</p>}
+              {wallets.length === 0 && <p className="text-xs text-muted-foreground mt-1">No wallets available on this network. Create one first.</p>}
             </div>
             <div>
               <Label htmlFor="toAddress">To Address (Recipient's Public Key)</Label>
-              <Input id="toAddress" placeholder="Recipient's public key" value={toAddress} onChange={(e) => setToAddress(e.target.value)} required />
+              <Input id="toAddress" name="toAddress" placeholder="Recipient's public key" value={toAddress} onChange={(e) => setToAddress(e.target.value)} required />
             </div>
             <div>
               <Label htmlFor="amount">Amount (uemfCoin)</Label>
-              <Input id="amount" type="number" placeholder="0.00" value={amount} onChange={(e) => setAmount(e.target.value)} required min="0.01" step="0.01" />
+              <Input id="amount" name="amount" type="number" placeholder="0.00" value={amount} onChange={(e) => setAmount(e.target.value)} required min="0.01" step="0.01" />
             </div>
             <div>
               <Label htmlFor="fee">Transaction Fee (uemfCoin)</Label>
-              <Input id="fee" type="number" placeholder="1" value={fee} onChange={(e) => setFee(e.target.value)} required min="0" step="0.1" />
+              <Input id="fee" name="fee" type="number" placeholder="1" value={fee} onChange={(e) => setFee(e.target.value)} required min="0" step="0.1" />
             </div>
             <div>
               <Label htmlFor="signature">Manual Digital Signature</Label>
-              <Input id="signature" placeholder="Enter your manually generated signature" value={signature} onChange={(e) => setSignature(e.target.value)} required />
+              <Input id="signature" name="signature" placeholder="Enter your manually generated signature" value={signature} onChange={(e) => setSignature(e.target.value)} required />
               <p className="text-xs text-muted-foreground mt-1">
-                Generate this using your private key and transaction data with a separate Node.js program (as per project spec).
+                Generate this using your private key and transaction data with a separate Node.js program.
               </p>
             </div>
             <Button type="submit" className="w-full" disabled={isPending || wallets.length === 0}>
@@ -123,7 +128,7 @@ export function CreateTransactionForm({ wallets, mempool }: CreateTransactionFor
           </form>
         </CardContent>
       </Card>
-      <FeeEstimator mempool={mempool} onFeeEstimated={handleFeeEstimated} />
+      <FeeEstimator mempool={mempool} onFeeEstimated={handleFeeEstimated} networkId={networkId} />
     </div>
   );
 }
