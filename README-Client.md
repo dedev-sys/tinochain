@@ -1,4 +1,4 @@
-# BlockSim - Client-Side Overview
+# Tinochain - Client-Side Overview
 
 This document details the client-side architecture and important aspects of the BlockSim application. The client is built using Next.js (App Router), React, TypeScript, ShadCN UI components, and Tailwind CSS.
 
