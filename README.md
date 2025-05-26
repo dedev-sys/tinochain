@@ -38,3 +38,4 @@ For a detailed understanding of the different parts of the application, please r
 *   **Tailwind CSS**: Utility-first CSS framework.
 *   **Genkit (Firebase)**: For integrating AI models and building AI flows.
 *   **Lucide React**: Icon library.
+# tinochain
