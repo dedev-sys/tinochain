@@ -2,7 +2,7 @@
 import { Header } from '@/components/layout/Header';
 import { BlockSimPageClient } from '@/components/BlockSimPageClient';
 import { BlockchainService } from '@/lib/blockchain-service';
-import Image from 'next/image';
+import { CryptoMarketView } from '@/components/market/CryptoMarketView'; // Nouveau composant
 
 export const dynamic = 'force-dynamic'; // Ensure data is fetched on each request
 
@@ -22,15 +22,9 @@ export default async function Home() {
         initialWallets={wallets}
         blockchainConfig={config}
       />
-      <div className="flex justify-center my-12">
-        <Image
-          src="https://placehold.co/200x200.png"
-          alt="Jeton Afrique avec carte"
-          width={200}
-          height={200}
-          className="rounded-full shadow-lg"
-          data-ai-hint="Africa map token coin"
-        />
+      {/* L'image du jeton africain a été supprimée ici */}
+      <div className="container mx-auto p-4 mt-8">
+        <CryptoMarketView />
       </div>
     </main>
   );
