@@ -17,10 +17,11 @@ import { FeeEstimator } from './FeeEstimator';
 interface CreateTransactionFormProps {
   wallets: WalletData[];
   mempool: MempoolTransactionData[];
-  networkId: string; // New prop
+  networkId: string;
+  setAutoOpenContractTxId: (txId: string | null) => void; // New prop
 }
 
-export function CreateTransactionForm({ wallets, mempool, networkId }: CreateTransactionFormProps) {
+export function CreateTransactionForm({ wallets, mempool, networkId, setAutoOpenContractTxId }: CreateTransactionFormProps) {
   const [fromAddress, setFromAddress] = useState<string>('');
   const [toAddress, setToAddress] = useState<string>('');
   const [amount, setAmount] = useState<string>('');
@@ -34,15 +35,11 @@ export function CreateTransactionForm({ wallets, mempool, networkId }: CreateTra
     if (wallets.length > 0 && !fromAddress) {
       setFromAddress(wallets[0].publicKey);
     } else if (wallets.length === 0) {
-      setFromAddress(''); // Clear if no wallets, e.g. after network switch
+      setFromAddress(''); 
     }
-    // Reset form fields if wallets list changes (e.g. network switch)
-    // but preserve fromAddress if it's still valid in the new list
     if (wallets.length > 0 && fromAddress && !wallets.find(w => w.publicKey === fromAddress)) {
       setFromAddress(wallets[0].publicKey);
     }
-
-
   }, [wallets, fromAddress]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -58,7 +55,6 @@ export function CreateTransactionForm({ wallets, mempool, networkId }: CreateTra
 
     startTransition(async () => {
       const formData = new FormData(event.currentTarget);
-      // networkId is passed as a separate argument to the action
       const result = await submitTransactionAction(networkId, formData);
       if (result.success) {
         toast({ title: 'Transaction Submitted', description: result.message });
@@ -67,6 +63,10 @@ export function CreateTransactionForm({ wallets, mempool, networkId }: CreateTra
         setSignature('');
         setSmartContractDetails('');
         setFee('1'); 
+        // If the action returned a newTxIdWithContract, set it for auto-opening
+        if (result.newTxIdWithContract) {
+          setAutoOpenContractTxId(result.newTxIdWithContract);
+        }
       } else {
         toast({ title: 'Transaction Failed', description: result.message, variant: 'destructive' });
       }

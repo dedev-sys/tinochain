@@ -31,6 +31,10 @@ export async function submitTransactionAction(networkId: string, formData: FormD
     const result = BlockchainService.addTransaction(networkId, transaction);
     if (result.success) {
       revalidatePath('/'); // Revalidates the current page, page.tsx will use current searchParams
+      // If smart contract details were present, include the new transaction ID in the success response
+      if (transaction.smartContractDetails && result.transactionId) {
+        return { ...result, newTxIdWithContract: result.transactionId };
+      }
     }
     return result;
   } catch (error) {

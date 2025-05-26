@@ -149,7 +149,7 @@ class Blockchain {
     };
   }
 
-  addTransaction(transaction: Omit<TransactionData, 'id' | 'timestamp'>): { success: boolean, message: string } {
+  addTransaction(transaction: Omit<TransactionData, 'id' | 'timestamp'>): { success: boolean, message: string, transactionId?: string } {
     if (!transaction.fromAddress || !transaction.toAddress || transaction.amount <= 0) {
       return { success: false, message: 'Transaction must include from, to, and a positive amount.' };
     }
@@ -174,14 +174,15 @@ class Blockchain {
         return { success: false, message: 'Invalid signature or mismatched sender address.' };
     }
     
+    const newTransactionId = calculateHash(JSON.stringify(transaction) + Date.now() + this.networkId);
     const newTransaction: TransactionData = {
       ...transaction,
-      id: calculateHash(JSON.stringify(transaction) + Date.now() + this.networkId),
+      id: newTransactionId,
       timestamp: Date.now(),
     };
 
     this.pendingTransactions.push(newTransaction);
-    return { success: true, message: `Transaction added to mempool on network ${this.networkId}.` };
+    return { success: true, message: `Transaction added to mempool on network ${this.networkId}.`, transactionId: newTransactionId };
   }
 
   getBalanceOfAddress(address: string): number {

@@ -1,6 +1,7 @@
 
 'use client';
 
+import { useState, useEffect } from 'react';
 import { BlockchainView } from '@/components/blockchain/BlockchainView';
 import { MempoolView } from '@/components/mempool/MempoolView';
 import { CreateTransactionForm } from '@/components/transactions/CreateTransactionForm';
@@ -26,6 +27,16 @@ export function BlockSimPageClient({
   initialWallets,
   blockchainConfig,
 }: BlockSimPageClientProps) {
+  const [autoOpenContractTxId, setAutoOpenContractTxId] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Reset autoOpenContractTxId when networkId changes
+    setAutoOpenContractTxId(null);
+  }, [networkId]);
+
+  const clearAutoOpenContractTxId = () => {
+    setAutoOpenContractTxId(null);
+  };
 
   return (
     <div className="container mx-auto p-4 space-y-8">
@@ -48,7 +59,12 @@ export function BlockSimPageClient({
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-1 space-y-6 order-2 lg:order-1">
           <WalletBalances wallets={initialWallets} networkId={networkId} />
-          <CreateTransactionForm wallets={initialWallets} mempool={initialMempool} networkId={networkId} />
+          <CreateTransactionForm 
+            wallets={initialWallets} 
+            mempool={initialMempool} 
+            networkId={networkId}
+            setAutoOpenContractTxId={setAutoOpenContractTxId} 
+          />
           <AdminControls wallets={initialWallets} networkId={networkId} />
         </div>
 
@@ -57,7 +73,11 @@ export function BlockSimPageClient({
         </div>
         
         <div className="lg:col-span-1 space-y-6 order-3 lg:order-3 min-h-[600px] max-h-[calc(100vh-12rem)] overflow-hidden flex flex-col">
-          <MempoolView mempool={initialMempool} />
+          <MempoolView 
+            mempool={initialMempool} 
+            autoOpenContractTxId={autoOpenContractTxId}
+            clearAutoOpenContractTxId={clearAutoOpenContractTxId}
+          />
         </div>
       </div>
     </div>

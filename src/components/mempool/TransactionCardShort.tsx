@@ -1,3 +1,6 @@
+
+'use client'; // Needs to be a client component for useState and useEffect
+
 import type { TransactionData } from '@/lib/blockchain-service';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -14,13 +17,31 @@ import {
 } from "@/components/ui/alert-dialog";
 import { ArrowRightLeft, Coins, Tag, UserCircle, Award, FileText } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { useState, useEffect } from 'react'; // Import useState and useEffect
 
 interface TransactionCardShortProps {
   transaction: TransactionData;
+  autoOpenContractTxId: string | null;
+  clearAutoOpenContractTxId: () => void;
 }
 
-export function TransactionCardShort({ transaction }: TransactionCardShortProps) {
+export function TransactionCardShort({ transaction, autoOpenContractTxId, clearAutoOpenContractTxId }: TransactionCardShortProps) {
   const isCoinbase = !transaction.fromAddress;
+  
+  const [isDialogOpen, setIsDialogOpen] = useState(
+    !!(transaction.smartContractDetails && transaction.id === autoOpenContractTxId)
+  );
+
+  useEffect(() => {
+    if (transaction.smartContractDetails && transaction.id === autoOpenContractTxId) {
+      // Dialog was auto-opened, clear the trigger so it doesn't re-open on unrelated re-renders
+      clearAutoOpenContractTxId();
+    }
+    // This effect should primarily react to the initial auto-open condition.
+    // Re-running if transaction.id or autoOpenContractTxId changes is fine,
+    // but the clearAutoOpenContractTxId ensures it's a one-time effect for a given ID.
+  }, [transaction.id, autoOpenContractTxId, clearAutoOpenContractTxId, transaction.smartContractDetails]);
+
   return (
     <Card className="w-full text-xs shadow-md hover:shadow-lg transition-shadow duration-200 border border-accent/30 rounded-lg">
       <CardHeader className="p-3">
@@ -74,7 +95,7 @@ export function TransactionCardShort({ transaction }: TransactionCardShortProps)
 
         {transaction.smartContractDetails && (
           <div className="mt-2 text-right">
-            <AlertDialog>
+            <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <AlertDialogTrigger asChild>
                 <Button variant="outline" size="sm" className="text-xs py-1 px-2 h-auto">
                   <FileText className="mr-1 h-3 w-3" />
