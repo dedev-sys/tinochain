@@ -1,3 +1,25 @@
-export default function Home() {
-  return <></>;
+import { Header } from '@/components/layout/Header';
+import { BlockSimPageClient } from '@/components/BlockSimPageClient';
+import { BlockchainService } from '@/lib/blockchain-service';
+
+export const dynamic = 'force-dynamic'; // Ensure data is fetched on each request
+
+export default async function Home() {
+  // Fetch initial data on the server
+  const chain = BlockchainService.getChain();
+  const mempool = BlockchainService.getMempool();
+  const wallets = BlockchainService.getAllWalletsWithBalances();
+  const config = BlockchainService.getConfig();
+
+  return (
+    <main className="min-h-screen flex flex-col bg-background">
+      <Header />
+      <BlockSimPageClient
+        initialChain={chain}
+        initialMempool={mempool}
+        initialWallets={wallets}
+        blockchainConfig={config}
+      />
+    </main>
+  );
 }
