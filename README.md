@@ -1,4 +1,4 @@
-# tINOCHAIN - Local Blockchain Simulator
+# TINOCHAIN - Local Blockchain Simulator
 
 TINOCHAIN is a Next.js application designed to simulate a local Proof-of-Work blockchain. It allows users to create wallets, send transactions, mine blocks, and observe the blockchain's state. The project also incorporates AI for features like transaction fee estimation and demonstrates a themable UI with network switching capabilities.
 
