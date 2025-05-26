@@ -108,7 +108,7 @@ export function TransactionCardShort({ transaction, autoOpenContractTxId, clearA
                     <FileText className="mr-2 h-5 w-5 text-primary" />
                     Détails du Contrat Intelligent (Simulation)
                   </AlertDialogTitle>
-                  <AlertDialogDescription className="text-left max-h-[400px] overflow-y-auto whitespace-pre-wrap break-words">
+                  <AlertDialogDescription className="text-sm text-left max-h-[400px] overflow-y-auto whitespace-pre-wrap break-words text-foreground">
                     {transaction.smartContractDetails}
                   </AlertDialogDescription>
                 </AlertDialogHeader>
