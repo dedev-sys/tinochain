@@ -1,6 +1,6 @@
 import type { TransactionData } from '@/lib/blockchain-service';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowRightLeft, Coins, Tag } from 'lucide-react';
+import { ArrowRightLeft, Coins, Tag, UserCircle, Award } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
 interface TransactionCardShortProps {
@@ -10,23 +10,55 @@ interface TransactionCardShortProps {
 export function TransactionCardShort({ transaction }: TransactionCardShortProps) {
   const isCoinbase = !transaction.fromAddress;
   return (
-    <Card className="w-full text-xs shadow-sm">
+    <Card className="w-full text-xs shadow-md hover:shadow-lg transition-shadow duration-200 border border-accent/30 rounded-lg">
       <CardHeader className="p-3">
-        <CardTitle className="flex items-center text-sm">
-          <ArrowRightLeft className="mr-2 h-4 w-4 text-accent" />
-          Tx: {transaction.id.substring(0, 12)}...
+        <CardTitle className="flex items-center text-sm justify-between">
+          <div className="flex items-center">
+            <ArrowRightLeft className="mr-2 h-4 w-4 text-accent" />
+            <span className="font-mono">Tx: {transaction.id.substring(0, 10)}...</span>
+          </div>
+          {isCoinbase && <Badge variant="secondary" className="text-xs bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border-amber-300 dark:border-amber-600">Coinbase</Badge>}
         </CardTitle>
       </CardHeader>
-      <CardContent className="p-3 space-y-1">
-        {isCoinbase ? (
-          <p><strong>To:</strong> <Badge variant="outline">{transaction.toAddress.substring(0,10)}...</Badge> (Coinbase)</p>
-        ) : (
-          <p><strong>From:</strong> <Badge variant="outline">{transaction.fromAddress?.substring(0,10)}...</Badge></p>
+      <CardContent className="p-3 space-y-2">
+        {!isCoinbase && (
+          <div className="space-y-1">
+            <div className="flex items-center">
+              <UserCircle className="mr-2 h-3.5 w-3.5 text-muted-foreground flex-shrink-0" />
+              <strong className="mr-1">De:</strong>
+              <Badge variant="outline" className="ml-1 text-xs font-mono truncate" title={transaction.fromAddress || ""}>{transaction.fromAddress?.substring(0,12)}...</Badge>
+            </div>
+            <div className="flex items-center">
+              <UserCircle className="mr-2 h-3.5 w-3.5 text-muted-foreground flex-shrink-0" />
+              <strong className="mr-1">À:</strong>
+              <Badge variant="outline" className="ml-1 text-xs font-mono truncate" title={transaction.toAddress}>{transaction.toAddress.substring(0,12)}...</Badge>
+            </div>
+          </div>
         )}
-        {!isCoinbase && <p><strong>To:</strong> <Badge variant="outline">{transaction.toAddress.substring(0,10)}...</Badge></p>}
-        <p className="flex items-center"><Coins className="mr-1 h-3 w-3" /> Amount: {transaction.amount} uemfCoin</p>
-        {!isCoinbase && <p className="flex items-center"><Tag className="mr-1 h-3 w-3" /> Fee: {transaction.fee} uemfCoin</p>}
-         <CardDescription>Signature: {transaction.signature.substring(0,15)}...</CardDescription>
+        {isCoinbase && (
+           <div className="flex items-center">
+             <Award className="mr-2 h-3.5 w-3.5 text-amber-600 dark:text-amber-500 flex-shrink-0" />
+             <strong className="mr-1">À:</strong>
+             <Badge variant="outline" className="ml-1 text-xs font-mono truncate" title={transaction.toAddress}>{transaction.toAddress.substring(0,12)}...</Badge>
+           </div>
+        )}
+        
+        <div className="flex items-center mt-1">
+          <Coins className="mr-2 h-3.5 w-3.5 text-green-600 dark:text-green-500 flex-shrink-0" />
+          <strong className="mr-1">Montant:</strong>
+          <span className="font-semibold text-green-700 dark:text-green-400">{transaction.amount} uemfCoin</span>
+        </div>
+
+        {!isCoinbase && transaction.fee > 0 && (
+          <div className="flex items-center">
+            <Tag className="mr-2 h-3.5 w-3.5 text-orange-600 dark:text-orange-500 flex-shrink-0" />
+            <strong className="mr-1">Frais:</strong>
+            <span className="font-semibold text-orange-700 dark:text-orange-400">{transaction.fee} uemfCoin</span>
+          </div>
+        )}
+        <CardDescription className="pt-1 text-muted-foreground font-mono text-[10px]">
+          Sign: {transaction.signature.substring(0,18)}...
+        </CardDescription>
       </CardContent>
     </Card>
   );
