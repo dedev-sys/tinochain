@@ -94,11 +94,14 @@ class Blockchain {
       this.createWallet(minerAddress);
     }
 
+    // Calculate total fees from pending transactions
+    const totalFeesFromPendingTransactions = this.pendingTransactions.reduce((sum, tx) => sum + tx.fee, 0);
+
     const rewardTx: TransactionData = {
       id: `coinbase-${this.networkId}-${Date.now()}`,
       fromAddress: null,
       toAddress: minerAddress,
-      amount: this.config.blockReward,
+      amount: this.config.blockReward + totalFeesFromPendingTransactions, // Miner gets block reward + fees
       fee: 0,
       timestamp: Date.now(),
       signature: 'coinbase',
@@ -109,17 +112,26 @@ class Blockchain {
     const newBlock = this.mineBlockLogic(transactionsToMine, minerAddress);
     this.chain.push(newBlock);
 
+    // Update wallet balances
+    // Sender balances are reduced by (amount + fee)
+    // Recipient balances are increased by (amount)
+    // The miner's reward (blockReward + totalFees) is handled by the rewardTx amount.
     newBlock.transactions.forEach(tx => {
-      if (tx.fromAddress) {
+      if (tx.fromAddress) { // Skip coinbase transaction for sender balance update
         const senderWallet = this.wallets.get(tx.fromAddress);
-        if (senderWallet) senderWallet.balance -= (tx.amount + tx.fee);
+        if (senderWallet) {
+          senderWallet.balance -= (tx.amount + tx.fee);
+        }
       }
+      // For all transactions (including coinbase), credit the recipient
       const recipientWallet = this.wallets.get(tx.toAddress);
-      if (recipientWallet) recipientWallet.balance += tx.amount;
+      if (recipientWallet) {
+        recipientWallet.balance += tx.amount;
+      }
     });
     
     this.pendingTransactions = [];
-    console.log(`[${this.networkId}] Block mined by ${minerAddress}. Reward: ${this.config.blockReward} ${this.config.coinbaseName}. Tx: ${newBlock.transactions.length-1}`);
+    console.log(`[${this.networkId}] Block mined by ${minerAddress}. Reward: ${this.config.blockReward} + Fees: ${totalFeesFromPendingTransactions} ${this.config.coinbaseName}. Tx in block: ${newBlock.transactions.length-1}`);
     return newBlock;
   }
   
