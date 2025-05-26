@@ -1,13 +1,22 @@
+
 import type { BlockData } from '@/lib/blockchain-service';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Box, User, Hash, CalendarDays, ListChecks, Award } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { useState, useEffect } from 'react';
 
 interface BlockCardProps {
   block: BlockData;
 }
 
 export function BlockCard({ block }: BlockCardProps) {
+  const [formattedTimestamp, setFormattedTimestamp] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Format the timestamp on the client side after mount
+    setFormattedTimestamp(new Date(block.timestamp).toLocaleString());
+  }, [block.timestamp]); // Re-run if block.timestamp changes
+
   return (
     <Card className="w-full shadow-md hover:shadow-lg transition-shadow duration-200">
       <CardHeader>
@@ -22,7 +31,7 @@ export function BlockCard({ block }: BlockCardProps) {
       <CardContent className="space-y-2 text-sm">
         <div className="flex items-center">
           <CalendarDays className="mr-2 h-4 w-4 text-muted-foreground" />
-          Timestamp: {new Date(block.timestamp).toLocaleString()}
+          Timestamp: {formattedTimestamp !== null ? formattedTimestamp : 'Loading time...'}
         </div>
         <div className="flex items-center">
           <ListChecks className="mr-2 h-4 w-4 text-muted-foreground" />
