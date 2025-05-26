@@ -95,6 +95,54 @@ body {
     --sidebar-border: 190 20% 20%;
     --sidebar-ring: 190 70% 60%;
   }
+
+  /* Rouge-Noir Theme */
+  html.theme-rouge-noir {
+    --background: 0 0% 7%; /* Near Black */
+    --foreground: 0 0% 90%; /* Light Gray */
+
+    --card: 0 0% 10%;
+    --card-foreground: 0 0% 90%;
+
+    --popover: 0 0% 10%;
+    --popover-foreground: 0 0% 90%;
+
+    --primary: 0 70% 55%; /* Red */
+    --primary-foreground: 0 0% 100%; /* White */
+
+    --secondary: 0 0% 15%; /* Dark gray for secondary elements */
+    --secondary-foreground: 0 0% 80%;
+
+    --muted: 0 0% 20%;
+    --muted-foreground: 0 0% 60%;
+
+    --accent: 0 80% 60%; /* Brighter Red */
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 350 70% 50%; /* A slightly different red for destructive actions */
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 50% 25%; /* Dark Reddish */
+    --input: 0 0% 15%;
+    --ring: 0 70% 55%; /* Red for ring */
+
+    /* Custom sidebar colors for rouge-noir mode */
+    --sidebar-background: 0 0% 5%; /* Very dark */
+    --sidebar-foreground: 0 0% 85%;
+    --sidebar-primary: 0 70% 55%; /* Red */
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 80% 60%; /* Brighter Red */
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 0 30% 20%;
+    --sidebar-ring: 0 70% 55%;
+
+    /* Chart colors for rouge-noir theme */
+    --chart-1: 0 70% 50%;
+    --chart-2: 0 60% 40%;
+    --chart-3: 0 0% 70%; /* Grey */
+    --chart-4: 0 80% 60%;
+    --chart-5: 0 50% 30%;
+  }
 }
 
 @layer base {
