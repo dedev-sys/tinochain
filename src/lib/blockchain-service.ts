@@ -163,7 +163,13 @@ class Blockchain {
       return { success: false, message: `Insufficient balance on network ${this.networkId}. Needed: ${transaction.amount + transaction.fee}, Has: ${senderWallet.balance}` };
     }
     
-    const transactionDataToSign = { fromAddress: transaction.fromAddress, toAddress: transaction.toAddress, amount: transaction.amount, fee: transaction.fee };
+    const transactionDataToSign = { 
+        fromAddress: transaction.fromAddress, 
+        toAddress: transaction.toAddress, 
+        amount: transaction.amount, 
+        fee: transaction.fee,
+        smartContractDetails: transaction.smartContractDetails // Include for signature if it were real
+    };
     if (!verifySignature(transactionDataToSign, transaction.signature, senderWallet.publicKey, transaction.fromAddress)) {
         return { success: false, message: 'Invalid signature or mismatched sender address.' };
     }

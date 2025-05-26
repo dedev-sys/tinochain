@@ -12,6 +12,7 @@ export interface TransactionData {
   fee: number;
   timestamp: number;
   signature: string; // User-provided manual signature
+  smartContractDetails?: string; // Optional: Details of the smart contract
   payload?: any; // Optional: for more complex transactions if needed for fee estimation
 }
 

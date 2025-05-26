@@ -1,6 +1,18 @@
 import type { TransactionData } from '@/lib/blockchain-service';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowRightLeft, Coins, Tag, UserCircle, Award } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { ArrowRightLeft, Coins, Tag, UserCircle, Award, FileText } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
 interface TransactionCardShortProps {
@@ -59,6 +71,33 @@ export function TransactionCardShort({ transaction }: TransactionCardShortProps)
         <CardDescription className="pt-1 text-muted-foreground font-mono text-[10px]">
           Sign: {transaction.signature.substring(0,18)}...
         </CardDescription>
+
+        {transaction.smartContractDetails && (
+          <div className="mt-2 text-right">
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="outline" size="sm" className="text-xs py-1 px-2 h-auto">
+                  <FileText className="mr-1 h-3 w-3" />
+                  Contrat
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle className="flex items-center">
+                    <FileText className="mr-2 h-5 w-5 text-primary" />
+                    Détails du Contrat Intelligent (Simulation)
+                  </AlertDialogTitle>
+                  <AlertDialogDescription className="text-left max-h-[400px] overflow-y-auto whitespace-pre-wrap break-words">
+                    {transaction.smartContractDetails}
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Fermer</AlertDialogCancel>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

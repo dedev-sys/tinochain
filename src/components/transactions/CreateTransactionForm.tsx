@@ -5,11 +5,12 @@ import { useState, useTransition, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { submitTransactionAction } from '@/app/actions';
 import { useToast } from '@/hooks/use-toast';
-import { Send, PenLine, Loader2 } from 'lucide-react';
+import { Send, PenLine, Loader2, FileText } from 'lucide-react';
 import type { WalletData, TransactionData as MempoolTransactionData } from '@/lib/blockchain-service';
 import { FeeEstimator } from './FeeEstimator';
 
@@ -25,6 +26,7 @@ export function CreateTransactionForm({ wallets, mempool, networkId }: CreateTra
   const [amount, setAmount] = useState<string>('');
   const [fee, setFee] = useState<string>('1');
   const [signature, setSignature] = useState<string>('');
+  const [smartContractDetails, setSmartContractDetails] = useState<string>('');
   const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
 
@@ -63,6 +65,7 @@ export function CreateTransactionForm({ wallets, mempool, networkId }: CreateTra
         setToAddress('');
         setAmount('');
         setSignature('');
+        setSmartContractDetails('');
         setFee('1'); 
       } else {
         toast({ title: 'Transaction Failed', description: result.message, variant: 'destructive' });
@@ -119,6 +122,20 @@ export function CreateTransactionForm({ wallets, mempool, networkId }: CreateTra
               <Input id="signature" name="signature" placeholder="Enter your manually generated signature" value={signature} onChange={(e) => setSignature(e.target.value)} required />
               <p className="text-xs text-muted-foreground mt-1">
                 Generate this using your private key and transaction data with a separate Node.js program.
+              </p>
+            </div>
+            <div>
+              <Label htmlFor="smartContractDetails">Smart Contract Details (Optional)</Label>
+              <Textarea 
+                id="smartContractDetails" 
+                name="smartContractDetails" 
+                placeholder="Enter conditions, terms, or notes for this transaction's 'smart contract'..." 
+                value={smartContractDetails} 
+                onChange={(e) => setSmartContractDetails(e.target.value)} 
+                className="min-h-[80px]"
+              />
+               <p className="text-xs text-muted-foreground mt-1">
+                Describe the terms or purpose of this transaction. This is for simulation only.
               </p>
             </div>
             <Button type="submit" className="w-full" disabled={isPending || wallets.length === 0}>

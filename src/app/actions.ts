@@ -13,6 +13,7 @@ export async function submitTransactionAction(networkId: string, formData: FormD
     const amount = parseFloat(formData.get('amount') as string);
     const fee = parseFloat(formData.get('fee') as string);
     const signature = formData.get('signature') as string;
+    const smartContractDetails = formData.get('smartContractDetails') as string | undefined;
 
     if (isNaN(amount) || isNaN(fee)) {
       return { success: false, message: 'Invalid amount or fee.' };
@@ -24,6 +25,7 @@ export async function submitTransactionAction(networkId: string, formData: FormD
       amount,
       fee,
       signature,
+      smartContractDetails: smartContractDetails && smartContractDetails.trim() !== '' ? smartContractDetails : undefined,
     };
 
     const result = BlockchainService.addTransaction(networkId, transaction);
