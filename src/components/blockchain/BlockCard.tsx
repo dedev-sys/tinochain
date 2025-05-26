@@ -1,6 +1,6 @@
 import type { BlockData } from '@/lib/blockchain-service';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Cube, User, Hash, CalendarDays, ListChecks, Award } from 'lucide-react';
+import { Box, User, Hash, CalendarDays, ListChecks, Award } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
 interface BlockCardProps {
@@ -12,7 +12,7 @@ export function BlockCard({ block }: BlockCardProps) {
     <Card className="w-full shadow-md hover:shadow-lg transition-shadow duration-200">
       <CardHeader>
         <CardTitle className="flex items-center text-xl">
-          <Cube className="mr-2 h-5 w-5 text-primary" />
+          <Box className="mr-2 h-5 w-5 text-primary" />
           Block #{block.height}
         </CardTitle>
         <CardDescription className="text-xs break-all">
