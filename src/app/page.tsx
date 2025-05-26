@@ -1,3 +1,4 @@
+
 import { Header } from '@/components/layout/Header';
 import { BlockSimPageClient } from '@/components/BlockSimPageClient';
 import { BlockchainService } from '@/lib/blockchain-service';
@@ -24,11 +25,11 @@ export default async function Home() {
       <div className="flex justify-center my-12">
         <Image
           src="https://placehold.co/200x200.png"
-          alt="Jeton Afrique"
+          alt="Jeton Afrique avec carte"
           width={200}
           height={200}
           className="rounded-full shadow-lg"
-          data-ai-hint="Africa token coin"
+          data-ai-hint="Africa map token coin"
         />
       </div>
     </main>
