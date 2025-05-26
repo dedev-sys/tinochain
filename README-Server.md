@@ -1,6 +1,6 @@
-# BlockSim - Server-Side Overview
+# TINOCHAIN - Server-Side Overview
 
-This document details the server-side architecture and important aspects of the BlockSim application. The server-side logic is primarily handled by Next.js (Server Actions and Server Components), a custom blockchain simulation service, and Genkit for AI features.
+This document details the server-side architecture and important aspects of the TINOCHAIN application. The server-side logic is primarily handled by Next.js (Server Actions and Server Components), a custom blockchain simulation service, and Genkit for AI features.
 
 ## Core Technologies
 
