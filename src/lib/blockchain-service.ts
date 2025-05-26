@@ -32,6 +32,7 @@ class Blockchain {
   public wallets: Map<string, WalletData>; // publicKey -> WalletData
   private config: BlockchainConfig;
   private networkId: string;
+  public donationAddress: string | null = null;
 
   constructor(networkId: string, specificConfig: Partial<BlockchainConfig> = {}) {
     this.networkId = networkId;
@@ -58,6 +59,17 @@ class Blockchain {
        // Give first wallet some initial coins based on network
       const initialBalance = this.networkId === 'test' ? 2000 : (this.networkId === 'dev' ? 5000 : 1000);
       this.wallets.set(publicKey, { publicKey, privateKey, balance: i === 0 ? initialBalance : initialBalance / 2 });
+      if (i === 0) {
+        this.donationAddress = publicKey; // Designate the first wallet as the donation address
+        console.log(`[${this.networkId}] Donation address set to: ${publicKey}`);
+      }
+    }
+     // Ensure there's always at least one wallet for donation if loop didn't run (e.g. if changed to 0 iterations)
+    if (this.wallets.size === 0) {
+        const { publicKey, privateKey } = generateSimpleKeyPair();
+        this.wallets.set(publicKey, { publicKey, privateKey, balance: 0 });
+        this.donationAddress = publicKey;
+        console.log(`[${this.networkId}] Donation address set to (fallback): ${publicKey}`);
     }
   }
 
@@ -201,10 +213,18 @@ class Blockchain {
   createWallet(publicKey?: string): WalletData {
     const keys = publicKey ? { publicKey, privateKey: `simulated_priv_for_${publicKey}_${this.networkId}` } : generateSimpleKeyPair();
     if (this.wallets.has(keys.publicKey)) {
+      // If creating the first wallet and it already exists, ensure donationAddress is set
+      if (!this.donationAddress && Array.from(this.wallets.keys())[0] === keys.publicKey) {
+        this.donationAddress = keys.publicKey;
+      }
       return this.wallets.get(keys.publicKey)!;
     }
     const newWallet: WalletData = { ...keys, balance: 0 };
     this.wallets.set(keys.publicKey, newWallet);
+    // If this is the very first wallet being created, set it as donation address
+    if (!this.donationAddress && this.wallets.size === 1) {
+        this.donationAddress = keys.publicKey;
+    }
     console.log(`[${this.networkId}] Wallet created: ${keys.publicKey}`);
     return { ...newWallet, privateKey: keys.privateKey };
   }
@@ -219,6 +239,10 @@ class Blockchain {
 
   getConfig(): BlockchainConfig {
     return {...this.config};
+  }
+
+  getDonationAddressInternal(): string | null {
+    return this.donationAddress;
   }
 }
 
@@ -244,6 +268,15 @@ export const BlockchainService = {
   getChain: (networkId: string) => getBlockchainInstance(networkId).getChain(),
   getMempool: (networkId: string) => getBlockchainInstance(networkId).getMempool(),
   getConfig: (networkId: string) => getBlockchainInstance(networkId).getConfig(),
+  getDonationAddress: (networkId: string): string | null => {
+    const instance = getBlockchainInstance(networkId);
+    // Ensure donation address is initialized if somehow missed
+    if (!instance.donationAddress && instance.wallets.size > 0) {
+        instance.donationAddress = Array.from(instance.wallets.keys())[0];
+        console.warn(`[${networkId}] Donation address was null, re-initialized to: ${instance.donationAddress}`);
+    }
+    return instance.getDonationAddressInternal();
+  },
   estimateFee: async (networkId: string, input: EstimateTransactionFeeInput) => {
     // The Genkit flow itself is network-agnostic, but the input data (mempoolSummary) comes from a specific network.
     // So, no direct change to estimateTransactionFee call, but context is network-specific.
@@ -252,3 +285,4 @@ export const BlockchainService = {
 };
 
 export type { BlockData, TransactionData, WalletData, BlockchainConfig, EstimateTransactionFeeInput };
+

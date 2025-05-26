@@ -18,10 +18,11 @@ interface CreateTransactionFormProps {
   wallets: WalletData[];
   mempool: MempoolTransactionData[];
   networkId: string;
-  setAutoOpenContractTxId: (txId: string | null) => void; // New prop
+  setAutoOpenContractTxId: (txId: string | null) => void;
+  initialToAddress?: string | null; // New prop to pre-fill recipient
 }
 
-export function CreateTransactionForm({ wallets, mempool, networkId, setAutoOpenContractTxId }: CreateTransactionFormProps) {
+export function CreateTransactionForm({ wallets, mempool, networkId, setAutoOpenContractTxId, initialToAddress }: CreateTransactionFormProps) {
   const [fromAddress, setFromAddress] = useState<string>('');
   const [toAddress, setToAddress] = useState<string>('');
   const [amount, setAmount] = useState<string>('');
@@ -42,6 +43,12 @@ export function CreateTransactionForm({ wallets, mempool, networkId, setAutoOpen
     }
   }, [wallets, fromAddress]);
 
+  useEffect(() => {
+    if (initialToAddress) {
+      setToAddress(initialToAddress);
+    }
+  }, [initialToAddress, networkId]); // networkId dependency to reset if network changes while prefill is active
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!fromAddress) {
@@ -55,15 +62,19 @@ export function CreateTransactionForm({ wallets, mempool, networkId, setAutoOpen
 
     startTransition(async () => {
       const formData = new FormData(event.currentTarget);
+      // Ensure 'toAddress' in formData reflects the state, in case it was prefilled
+      formData.set('toAddress', toAddress); 
       const result = await submitTransactionAction(networkId, formData);
       if (result.success) {
         toast({ title: 'Transaction Submitted', description: result.message });
-        setToAddress('');
+        // Only clear toAddress if it wasn't prefilled by initialToAddress, or let it be cleared by next prefill
+        if (!initialToAddress) { 
+            setToAddress('');
+        }
         setAmount('');
         setSignature('');
         setSmartContractDetails('');
         setFee('1'); 
-        // If the action returned a newTxIdWithContract, set it for auto-opening
         if (result.newTxIdWithContract) {
           setAutoOpenContractTxId(result.newTxIdWithContract);
         }
@@ -149,3 +160,4 @@ export function CreateTransactionForm({ wallets, mempool, networkId, setAutoOpen
     </div>
   );
 }
+
