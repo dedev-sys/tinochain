@@ -55,12 +55,14 @@ export function WalletBalances({ wallets: initialWallets, networkId }: WalletBal
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-semibold flex items-center">
-          <Landmark className="mr-2 h-6 w-6 text-primary" />
-          Wallets (<span className="capitalize">{networkId}</span>)
+      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+        <h2 className="text-2xl font-semibold flex items-center flex-grow min-w-[200px] md:min-w-[250px]">
+          <Landmark className="mr-2 h-6 w-6 text-primary flex-shrink-0" />
+          <span>
+            Wallets (<span className="capitalize">{networkId}</span>)
+          </span>
         </h2>
-        <Button onClick={handleCreateWallet} disabled={isPending}>
+        <Button onClick={handleCreateWallet} disabled={isPending} className="flex-shrink-0">
           {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <PlusCircle className="mr-2 h-4 w-4" />}
           Create Wallet
         </Button>
